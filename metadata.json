@@ -1,0 +1,6 @@
+{
+  "name": "PenguinIT",
+  "description": "PenguinIT: IT ON YOUR SIDE. OS Switch, AI, automation, and everyday tech support.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
