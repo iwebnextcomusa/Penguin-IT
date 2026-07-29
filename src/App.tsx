@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion, useScroll, useSpring } from 'motion/react';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { About } from './components/About';
@@ -17,6 +18,14 @@ import { Footer } from './components/Footer';
 export default function App() {
   const [isDarkMode, setIsDarkMode] = useState<boolean>(true);
   const [activeSection, setActiveSection] = useState<string>('home');
+
+  // Framer motion scroll progress
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
 
   useEffect(() => {
     // Apply dark class to document element
@@ -57,6 +66,12 @@ export default function App() {
     <div className={`min-h-screen transition-colors duration-300 font-sans ${
       isDarkMode ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'
     }`}>
+      {/* Scroll Progress Bar at very top */}
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-400 via-sky-400 to-amber-400 origin-left z-[100] shadow-sm shadow-cyan-500/50"
+        style={{ scaleX }}
+      />
+
       {/* Sticky Header */}
       <Header
         isDarkMode={isDarkMode}

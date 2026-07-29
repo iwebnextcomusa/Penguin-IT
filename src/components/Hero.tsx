@@ -1,12 +1,22 @@
-import React from 'react';
-import { ArrowRight, Phone, AlertTriangle, RefreshCw, HelpCircle, MessageSquare, Wrench, FileCode, TrendingUp, ShieldCheck, Cpu } from 'lucide-react';
-import { PAIN_POINTS_DATA, LOOP_STEPS_DATA } from '../data/mockData';
+import React, { useState, useRef } from 'react';
+import { ArrowRight, Phone, AlertTriangle, RefreshCw, HelpCircle, Cpu, Volume2, VolumeX } from 'lucide-react';
+import { PAIN_POINTS_DATA } from '../data/mockData';
 
 interface HeroProps {
   isDarkMode: boolean;
 }
 
 export const Hero: React.FC<HeroProps> = ({ isDarkMode }) => {
+  const [isMuted, setIsMuted] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const toggleMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !isMuted;
+      setIsMuted(!isMuted);
+    }
+  };
+
   const handleScroll = (id: string) => {
     const el = document.querySelector(id);
     if (el) el.scrollIntoView({ behavior: 'smooth' });
@@ -18,13 +28,54 @@ export const Hero: React.FC<HeroProps> = ({ isDarkMode }) => {
     HelpCircle: HelpCircle
   };
 
-  const loopIcons = [MessageSquare, Wrench, FileCode, TrendingUp, ShieldCheck];
-
   return (
     <section
       id="home"
       className="relative pt-28 pb-20 md:pt-36 md:pb-24 overflow-hidden"
     >
+      {/* Background Video Layer */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <video
+          ref={videoRef}
+          autoPlay
+          loop
+          muted={isMuted}
+          playsInline
+          className="w-full h-full object-cover opacity-60 filter brightness-100 contrast-105 scale-105"
+        >
+          <source
+            src="https://g0064uyv8qiaww4b.public.blob.vercel-storage.com/Penguin_IT_video_OS_Switch_202607292149.mp4"
+            type="video/mp4"
+          />
+        </video>
+        {/* Dark overlay gradients for crisp text readability */}
+        <div className={`absolute inset-0 ${
+          isDarkMode
+            ? 'bg-gradient-to-b from-slate-950/60 via-slate-950/45 to-slate-950/85'
+            : 'bg-gradient-to-b from-slate-900/40 via-slate-950/50 to-slate-950/75'
+        }`} />
+      </div>
+
+      {/* Video Mute / Unmute Floating Control */}
+      <button
+        onClick={toggleMute}
+        type="button"
+        aria-label={isMuted ? "Unmute video" : "Mute video"}
+        className="absolute bottom-6 right-6 z-20 inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-slate-950/80 hover:bg-slate-900 border border-cyan-500/30 text-xs font-mono text-cyan-400 hover:text-cyan-300 shadow-xl shadow-slate-950/80 backdrop-blur-md transition-all duration-200 cursor-pointer hover:border-cyan-400 hover:scale-105 group"
+      >
+        {isMuted ? (
+          <>
+            <VolumeX className="w-4 h-4 text-slate-400 group-hover:text-cyan-400 transition-colors" />
+            <span className="hidden sm:inline">Unmute Video</span>
+          </>
+        ) : (
+          <>
+            <Volume2 className="w-4 h-4 text-cyan-400 animate-pulse" />
+            <span className="hidden sm:inline">Mute Video</span>
+          </>
+        )}
+      </button>
+
       {/* High-tech Background Ambient Effects */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-cyan-500/10 rounded-full blur-[140px] pointer-events-none"></div>
       <div className="absolute top-1/3 right-10 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none"></div>
@@ -126,43 +177,6 @@ export const Hero: React.FC<HeroProps> = ({ isDarkMode }) => {
               </div>
             );
           })}
-        </div>
-
-        {/* The Penguin IT Loop Section */}
-        <div className="bento-card p-8 sm:p-12 relative overflow-hidden border border-cyan-500/30">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl sm:text-3xl font-extrabold font-display tracking-tight text-white mb-2">
-              The <span className="text-cyan-400">PenguinIT</span> Loop
-            </h2>
-            <p className="text-xs sm:text-sm font-mono text-slate-400">
-              How our repeatable workflow turns single tech fixes into permanent assets for your team.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-            {LOOP_STEPS_DATA.map((step, idx) => {
-              const IconComponent = loopIcons[idx] || MessageSquare;
-              return (
-                <div
-                  key={step.stepNumber}
-                  className="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-col items-start relative group hover:border-cyan-500/50 transition-all duration-300"
-                >
-                  <div className="flex items-center justify-between w-full mb-3">
-                    <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
-                      Step {step.stepNumber}
-                    </span>
-                    <IconComponent className="w-5 h-5 text-cyan-400" />
-                  </div>
-                  <h4 className="text-base font-extrabold font-display text-white mb-1 tracking-wide">
-                    {step.name}
-                  </h4>
-                  <p className="text-xs text-slate-300 leading-relaxed">
-                    {step.description}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
         </div>
 
       </div>
